@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en-AU" data-app="homebase">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Homebase — your browser start page</title>
+<meta name="description" content="A calm browser start page with a big clock, local weather and a 24-hour chart, quick links, today's to-dos, a focus timer and notes.">
+<meta property="og:title" content="Homebase">
+<meta property="og:description" content="A calm browser start page with a big clock, local weather and a 24-hour chart, quick links, today's to-dos, a focus timer and notes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lz-homebase.pages.dev/">
+<meta property="og:image" content="https://lz-homebase.pages.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="zl.css">
+<link rel="stylesheet" href="styles.css">
+<script src="zl.js"></script>
+</head>
+<body id="top">
+<div data-zl="nav"></div>
+
+<!-- Shared gradients for the weather icons -->
+<svg class="hb-defs" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <linearGradient id="hbg-sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--wx-sun-a)"/><stop offset="1" style="stop-color:var(--wx-sun-b)"/></linearGradient>
+    <linearGradient id="hbg-moon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--wx-moon-a)"/><stop offset="1" style="stop-color:var(--wx-moon-b)"/></linearGradient>
+    <linearGradient id="hbg-cloud" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--wx-cloud-a)"/><stop offset="1" style="stop-color:var(--wx-cloud-b)"/></linearGradient>
+    <linearGradient id="hbg-cloud2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--wx-cloud-c)"/><stop offset="1" style="stop-color:var(--wx-cloud-d)"/></linearGradient>
+    <linearGradient id="hbg-temp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.32"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></linearGradient>
+  </defs>
+</svg>
+
+<main>
+  <!-- THE APP comes first: Homebase is a start page -->
+  <section class="zl-stage hb-stage" id="app" data-nav="Dashboard" aria-labelledby="hb-title">
+    <h1 class="sr-only" id="hb-title">Homebase</h1>
+    <div class="zl-wrap">
+      <div class="zl-app hb-app">
+        <div class="zl-appbar">
+          <div class="zl-appbar-title"><span class="zl-dot" id="hb-dot"></span><span>Start page</span> <span class="zl-appbar-status" id="hb-status" aria-live="polite">Saved</span></div>
+          <button class="zl-btn zl-btn-secondary zl-btn-sm" type="button" id="customise-btn" data-open-customise>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+            Customise
+          </button>
+        </div>
+
+        <div class="hb-dash" id="dash" data-bg="ember">
+          <div class="hb-grid" id="hb-grid">
+
+            <!-- Clock -->
+            <section class="hb-w w-clock" id="w-clock" data-widget="clock" aria-label="Clock">
+              <p class="hb-date" id="clock-date">Friday 30 October</p>
+              <time class="hb-time num" id="clock-time" datetime="">--:--</time>
+              <p class="hb-greet"><span id="greeting">Good afternoon</span><button type="button" class="hb-addname" id="add-name" hidden>Add your name</button></p>
+            </section>
+
+            <!-- Search -->
+            <section class="hb-w w-search" id="w-search" data-widget="search" aria-labelledby="search-label">
+              <form class="hb-search" id="search-form" role="search" autocomplete="off">
+                <div class="hb-search-top">
+                  <span class="zl-label" id="engine-label">Search with</span>
+                  <div class="zl-seg hb-engines" id="engine-seg" role="group" aria-labelledby="engine-label"></div>
+                </div>
+                <label class="sr-only" for="q" id="search-label">Search the web</label>
+                <div class="hb-search-box">
+                  <svg class="hb-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+                  <input class="hb-q" id="q" name="q" type="search" enterkeyhint="search" spellcheck="false" placeholder="Search Google" aria-describedby="search-hint">
+                  <kbd class="hb-kbd" aria-hidden="true">/</kbd>
+                  <button class="hb-go" type="submit" aria-label="Search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+                  </button>
+                </div>
+                <p class="zl-hint hb-search-hint" id="search-hint" aria-live="polite"></p>
+              </form>
+            </section>
+
+            <!-- Quick links -->
+            <section class="hb-w w-links" id="w-links" data-widget="links" aria-labelledby="links-h">
+              <h2 class="sr-only" id="links-h">Quick links</h2>
+              <p class="zl-hint hb-edit-hint" id="links-hint" hidden>Drag tiles, or use the arrows, to reorder. Changes save straight away.</p>
+              <ul class="hb-links" id="links-list" aria-describedby="links-hint"></ul>
+            </section>
+
+            <!-- Weather -->
+            <section class="hb-w hb-card w-weather" id="w-weather" data-widget="weather" aria-labelledby="wx-h" aria-busy="false">
+              <header class="hb-card-head">
+                <h2 id="wx-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg><span id="wx-place">Perth</span></h2>
+                <span class="hb-head-meta" id="wx-detail">Western Australia, Australia</span>
+                <span class="hb-updated" id="wx-updated" aria-live="polite"></span>
+                <button class="zl-iconbtn hb-iconbtn" type="button" id="wx-refresh" aria-label="Refresh the weather" data-tip="Refresh">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.7L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.3 4.7L20 16"/><path d="M20 20.5V16h-4.5"/></svg>
+                </button>
+                <button class="zl-btn zl-btn-secondary zl-btn-sm" type="button" id="wx-change">Change city</button>
+              </header>
+              <div id="wx-body" class="hb-wx-body"></div>
+            </section>
+
+            <!-- Today -->
+            <section class="hb-w hb-card w-today" id="w-today" data-widget="today" aria-labelledby="today-h">
+              <header class="hb-card-head">
+                <h2 id="today-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.5 9.5"/></svg>Today</h2>
+                <span class="hb-head-meta" id="todo-meta"></span>
+              </header>
+              <div class="zl-field hb-one">
+                <label class="zl-label" for="one-thing">Today's one thing</label>
+                <input class="zl-input hb-one-input" id="one-thing" maxlength="120" placeholder="The one thing that would make today a win" aria-describedby="one-hint">
+                <span class="zl-hint" id="one-hint">Saved as you type. Clears at midnight.</span>
+              </div>
+              <form class="hb-todo-form" id="todo-form" autocomplete="off">
+                <label class="sr-only" for="todo-input">New to-do</label>
+                <input class="zl-input" id="todo-input" maxlength="160" placeholder="Add a to-do" aria-describedby="todo-err">
+                <button class="zl-btn zl-btn-primary" type="submit" id="todo-add">Add</button>
+              </form>
+              <p class="zl-error" id="todo-err" hidden></p>
+              <ul class="hb-todos" id="todo-list" aria-label="To-dos"></ul>
+              <div class="zl-empty hb-todo-empty" id="todo-empty" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+                <h3 id="todo-empty-h">A clear day</h3>
+                <p id="todo-empty-p">Add what you want to get done today. Tick things off and they move to Done.</p>
+              </div>
+              <div class="hb-done" id="done-wrap" hidden>
+                <button class="hb-done-toggle" type="button" id="done-toggle" aria-expanded="false" aria-controls="done-list">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+                  <span id="done-label">Done</span>
+                </button>
+                <button class="zl-btn zl-btn-ghost zl-btn-sm" type="button" id="done-clear">Clear done</button>
+                <ul class="hb-todos hb-done-list" id="done-list" aria-label="Done" hidden></ul>
+              </div>
+            </section>
+
+            <!-- Focus timer -->
+            <section class="hb-w hb-card w-focus" id="w-focus" data-widget="focus" aria-labelledby="focus-h">
+              <header class="hb-card-head">
+                <h2 id="focus-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M10 3h4"/></svg>Focus</h2>
+                <span class="hb-head-meta" id="timer-sessions">0 sessions today</span>
+              </header>
+              <div class="hb-timer">
+                <div class="hb-ring-wrap">
+                  <svg class="hb-ring" id="timer-ring" viewBox="0 0 200 200" aria-hidden="true">
+                    <circle class="hb-ring-track" cx="100" cy="100" r="88"/>
+                    <circle class="hb-ring-fill" id="timer-fill" cx="100" cy="100" r="88" pathLength="1000"/>
+                  </svg>
+                  <div class="hb-ring-center">
+                    <span class="hb-timer-mode" id="timer-mode">Focus</span>
+                    <span class="hb-timer-time num" id="timer-time" role="timer" aria-live="off">25:00</span>
+                    <span class="hb-timer-sub" id="timer-sub">Ready when you are</span>
+                  </div>
+                </div>
+                <div class="hb-timer-side">
+                  <div class="zl-field">
+                    <span class="zl-label" id="preset-label">Length</span>
+                    <div class="zl-seg" id="timer-presets" role="group" aria-labelledby="preset-label"></div>
+                  </div>
+                  <div class="hb-timer-btns">
+                    <button class="zl-btn zl-btn-primary" type="button" id="timer-start">Start focus</button>
+                    <button class="zl-btn zl-btn-secondary" type="button" id="timer-reset">Reset</button>
+                    <button class="zl-btn zl-btn-ghost" type="button" id="timer-skip">Skip to break</button>
+                  </div>
+                  <p class="sr-only" id="timer-live" aria-live="assertive"></p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Notes -->
+            <section class="hb-w hb-card w-notes" id="w-notes" data-widget="notes" aria-labelledby="notes-h">
+              <header class="hb-card-head">
+                <h2 id="notes-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/></svg>Notes</h2>
+                <span class="hb-head-meta num" id="notes-count">0 words</span>
+                <span class="hb-updated" id="notes-status" aria-live="polite"></span>
+                <button class="zl-btn zl-btn-ghost zl-btn-sm" type="button" id="notes-copy">Copy</button>
+                <button class="zl-btn zl-btn-ghost zl-btn-sm" type="button" id="notes-clear">Clear</button>
+              </header>
+              <label class="sr-only" for="notes-text">Scratchpad</label>
+              <textarea class="zl-textarea hb-notes" id="notes-text" placeholder="Jot anything down. It saves as you type and stays here until you clear it." spellcheck="true"></textarea>
+            </section>
+
+          </div>
+
+          <div class="zl-empty hb-all-off" id="all-off" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+            <h3>Every widget is turned off</h3>
+            <p>Turn on the clock, weather or any other widget to fill this page.</p>
+            <button class="zl-btn zl-btn-primary" type="button" data-open-customise>Choose widgets</button>
+          </div>
+
+          <a class="hb-more" href="#about">
+            About Homebase
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT: the hero, below the dashboard -->
+  <section class="zl-hero zl-wrap hb-about" id="about" aria-labelledby="about-h">
+    <div data-zl="icon"></div>
+    <h2 class="hb-about-title" id="about-h">Homebase</h2>
+    <p class="zl-tagline">A calmer place to start every tab.</p>
+    <p class="zl-sub">The time, the weather for the next 24 hours, your links, today's to-dos, a focus timer and a scratchpad. One quiet page you set as your browser's home.</p>
+    <div class="zl-hero-ctas">
+      <a class="zl-btn zl-btn-primary zl-btn-lg" href="#how">Set it as your home page</a>
+      <button class="zl-btn zl-btn-secondary zl-btn-lg" type="button" data-open-customise>Customise</button>
+    </div>
+    <div class="zl-hero-meta">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>No account, no tracking</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Saved on your device</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Free weather from Open-Meteo</span>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="zl-section alt" id="how" data-nav="How it works">
+    <div class="zl-wrap">
+      <div class="zl-section-head zl-reveal"><h2>Set up once. Open it every day.</h2><p>It takes about a minute, and everything stays in this browser.</p></div>
+      <div class="zl-steps zl-reveal">
+        <div class="zl-step"><h3>Make it yours</h3><p>Open Customise to add your name, pick °C or °F, choose a background and turn widgets on or off.</p></div>
+        <div class="zl-step"><h3>Add your places</h3><p>Pin the sites you open most, search for your city, and jot down today's one thing.</p></div>
+        <div class="zl-step"><h3>Set it as your home page</h3><p>Paste this page's address into your browser's home page setting. Steps for Chrome, Safari, Edge and Android are in the questions below.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="zl-section" id="features" data-nav="Features">
+    <div class="zl-wrap">
+      <div class="zl-section-head zl-reveal"><h2>Everything a new tab needs.</h2><p>Nothing it doesn't. Each widget does one job well, and you can hide the ones you don't use.</p></div>
+      <div class="zl-bento zl-reveal">
+        <div class="zl-tile wide hb-tile-chart">
+          <h3>The next 24 hours, at a glance.</h3>
+          <p>An hourly temperature line with rain chance underneath. Hover or tap any hour for the details, then check the week below it.</p>
+          <svg class="zl-tile-visual hb-mini-chart" viewBox="0 0 520 150" aria-hidden="true">
+            <path class="g" d="M0 30H520M0 70H520M0 110H520"/>
+            <g class="bars"><rect x="196" y="118" width="12" height="22" rx="3"/><rect x="226" y="104" width="12" height="36" rx="3"/><rect x="256" y="96" width="12" height="44" rx="3"/><rect x="286" y="110" width="12" height="30" rx="3"/><rect x="316" y="126" width="12" height="14" rx="3"/></g>
+            <path class="area" d="M0 92C40 80 70 52 110 40S180 30 220 48 300 96 340 102 430 96 470 76 510 60 520 58V150H0Z"/>
+            <path class="line" d="M0 92C40 80 70 52 110 40S180 30 220 48 300 96 340 102 430 96 470 76 510 60 520 58"/>
+            <line class="guide" x1="148" y1="16" x2="148" y2="140"/>
+            <circle class="dot" cx="148" cy="35" r="6"/>
+            <g class="tip"><rect x="160" y="6" width="96" height="40" rx="10"/><text x="172" y="23">4 pm</text><text x="172" y="39" class="b">27° Sunny</text></g>
+          </svg>
+        </div>
+        <div class="zl-tile">
+          <div class="zl-tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></div>
+          <h3>Search with a prefix.</h3>
+          <p>Start with !y for YouTube, !gh for GitHub or !p for Perplexity. Press / from anywhere to start typing.</p>
+          <div class="zl-tile-visual hb-mini-bang"><span class="hb-mini-q"><b>!y</b> lofi beats</span><span class="hb-mini-to">YouTube</span></div>
+        </div>
+        <div class="zl-tile">
+          <h3>Focus in blocks.</h3>
+          <p>25 minutes on, 5 off, with a soft chime at the end.</p>
+          <svg class="zl-tile-visual hb-mini-ring" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" class="t"/><circle cx="60" cy="60" r="50" class="f" pathLength="100"/><text x="60" y="67">18:42</text></svg>
+        </div>
+        <div class="zl-tile">
+          <h3>Links in your order.</h3>
+          <p>Site icons load on their own. Drag to reorder, edit or remove with undo.</p>
+          <div class="zl-tile-visual hb-mini-links" aria-hidden="true"><span>G</span><span>Y</span><span>M</span><span>C</span><span>S</span><span class="add">+</span></div>
+        </div>
+        <div class="zl-tile">
+          <h3>Six backgrounds.</h3>
+          <p>Soft mesh tints that drift slowly, or stay still if you prefer less motion.</p>
+          <div class="zl-tile-visual hb-mini-bgs" aria-hidden="true"><span data-bg="ember"></span><span data-bg="lagoon"></span><span data-bg="dusk"></span><span data-bg="sand"></span><span data-bg="mist"></span><span data-bg="plain"></span></div>
+        </div>
+        <div class="zl-tile half">
+          <h3>A short list for today.</h3>
+          <p>One thing that matters, then the rest. Finished items fold away into Done.</p>
+          <ul class="zl-tile-visual hb-mini-todo" aria-hidden="true"><li class="one">Finish the circuits lab report</li><li class="done">Book a haircut</li><li>Gym, legs day</li></ul>
+        </div>
+        <div class="zl-tile half">
+          <div class="zl-tile-big">0</div>
+          <h3>Accounts, trackers or servers.</h3>
+          <p>Your settings, links, to-dos and notes live in this browser. Export them to a file to move to another computer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="zl-section alt" id="faq" data-nav="FAQ">
+    <div class="zl-wrap">
+      <div class="zl-section-head center zl-reveal"><h2>Questions</h2></div>
+      <div class="zl-faq zl-reveal">
+        <details id="faq-home"><summary>How do I make Homebase my home page?</summary><div>
+          <p class="hb-faq-p">Copy this page's address first: <button class="zl-btn zl-btn-secondary zl-btn-sm" type="button" id="copy-url">Copy address</button></p>
+          <ul class="hb-faq-list">
+            <li><b>Chrome:</b> Settings, then On startup, then Open a specific page, and paste the address. To add a home button, go to Appearance and turn on Show home button.</li>
+            <li><b>Safari on Mac:</b> Settings, then General. Paste the address into Homepage, and set new windows and new tabs to open with Homepage.</li>
+            <li><b>Edge:</b> Settings, then Start, home, and new tabs. Under When Edge starts, choose Open these pages and add the address.</li>
+            <li><b>Chrome on Android:</b> Menu, then Settings, then Homepage. Turn it on and enter the address.</li>
+          </ul>
+        </div></details>
+        <details><summary>Can it replace the new tab page?</summary><div>Safari can open new tabs with your home page. Chrome and Edge only let extensions change the new tab page, so set Homebase as the page they open on startup and as the home button instead.</div></details>
+        <details><summary>Where is my data stored?</summary><div>In this browser's local storage, on your device. Homebase has no server and no account. The only requests it makes are for the weather, place search and site icons.</div></details>
+        <details><summary>Where does the weather come from?</summary><div>From Open-Meteo, a free, open weather service that needs no key. The forecast is kept for 30 minutes, so opening lots of tabs doesn't send lots of requests. Press refresh to fetch it again.</div></details>
+        <details><summary>How do I move my setup to another computer?</summary><div>Open Customise and choose Export. You get a small file with your settings, links, to-dos and notes. On the other computer, open Customise and choose Import.</div></details>
+        <details><summary>Why does a link show a letter instead of its icon?</summary><div>Some sites don't publish an icon Homebase can fetch, or you're offline. The letter tile is the fallback, and the link still works.</div></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-zl="footer"></div>
+<p class="sr-only" id="hb-live" aria-live="polite"></p>
+
+<!-- Link dialog -->
+<dialog class="zl-dialog" id="link-dlg" aria-labelledby="link-dlg-h">
+  <form id="link-form" novalidate>
+    <div class="zl-dialog-head"><h2 id="link-dlg-h">Add a link</h2><button class="zl-iconbtn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="zl-dialog-body">
+      <div class="zl-field">
+        <label class="zl-label" for="link-url">Web address</label>
+        <input class="zl-input" id="link-url" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="github.com" aria-describedby="link-url-hint link-url-err">
+        <span class="zl-hint" id="link-url-hint">You can leave out https://.</span>
+        <span class="zl-error" id="link-url-err" hidden></span>
+      </div>
+      <div class="zl-field">
+        <label class="zl-label" for="link-name">Name</label>
+        <input class="zl-input" id="link-name" maxlength="24" placeholder="Filled in from the address" aria-describedby="link-name-hint">
+        <span class="zl-hint" id="link-name-hint">Shown under the icon. Up to 24 characters.</span>
+      </div>
+    </div>
+    <div class="zl-dialog-foot">
+      <button class="zl-btn zl-btn-danger hb-foot-left" type="button" id="link-delete" hidden>Remove</button>
+      <button class="zl-btn zl-btn-secondary" type="button" data-close>Cancel</button>
+      <button class="zl-btn zl-btn-primary" type="submit" id="link-save">Add link</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- City dialog -->
+<dialog class="zl-dialog" id="city-dlg" aria-labelledby="city-dlg-h">
+  <form id="city-form" novalidate>
+    <div class="zl-dialog-head"><h2 id="city-dlg-h">Change city</h2><button class="zl-iconbtn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="zl-dialog-body">
+      <div class="zl-field">
+        <label class="zl-label" for="city-q">City or town</label>
+        <div class="hb-inline">
+          <input class="zl-input" id="city-q" type="search" placeholder="Belgrade, Fremantle, Tokyo" aria-describedby="city-msg">
+          <button class="zl-btn zl-btn-primary" type="submit" id="city-search">Search</button>
+        </div>
+        <span class="zl-hint" id="city-msg" aria-live="polite">Search by name, then pick the right place from the list.</span>
+      </div>
+      <ul class="hb-city-results" id="city-results" aria-label="Matching places"></ul>
+      <div class="hb-or"><span>or</span></div>
+      <button class="zl-btn zl-btn-secondary" type="button" id="city-locate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8z"/></svg>
+        Use my location
+      </button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Customise dialog -->
+<dialog class="zl-dialog hb-cust" id="cust-dlg" aria-labelledby="cust-h">
+  <div class="zl-dialog-head"><h2 id="cust-h">Customise</h2><button class="zl-iconbtn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="zl-dialog-body">
+    <div class="zl-field">
+      <label class="zl-label" for="set-name">Your name</label>
+      <input class="zl-input" id="set-name" maxlength="30" autocomplete="given-name" placeholder="Used in the greeting" aria-describedby="set-name-hint">
+      <span class="zl-hint" id="set-name-hint">Shown as "Good morning, Lazar". Leave it empty for no name.</span>
+    </div>
+    <div class="hb-cust-row">
+      <div class="zl-field"><span class="zl-label" id="units-label">Temperature</span><div class="zl-seg" id="set-units" role="group" aria-labelledby="units-label"><button type="button" data-v="c">°C</button><button type="button" data-v="f">°F</button></div></div>
+      <div class="zl-field"><span class="zl-label" id="clockfmt-label">Clock</span><div class="zl-seg" id="set-clock" role="group" aria-labelledby="clockfmt-label"><button type="button" data-v="12">12 h</button><button type="button" data-v="24">24 h</button></div></div>
+    </div>
+    <div class="zl-field">
+      <span class="zl-label" id="bg-label">Background</span>
+      <div class="hb-bgs" id="set-bg" role="radiogroup" aria-labelledby="bg-label"></div>
+      <span class="zl-hint" id="bg-hint">Mesh backgrounds drift slowly. They stay still if your device is set to reduce motion.</span>
+    </div>
+    <div class="zl-field">
+      <span class="zl-label" id="widgets-label">Widgets</span>
+      <span class="zl-hint">Turn widgets on or off. Drag the handle or use the arrows to change the order.</span>
+      <ul class="hb-wlist" id="set-widgets" aria-labelledby="widgets-label"></ul>
+    </div>
+    <div class="zl-field">
+      <span class="zl-label">Backup</span>
+      <div class="hb-inline wrap">
+        <button class="zl-btn zl-btn-secondary" type="button" id="export-btn">Export</button>
+        <button class="zl-btn zl-btn-secondary" type="button" id="import-btn">Import</button>
+        <input type="file" id="import-file" accept="application/json,.json" class="sr-only" tabindex="-1" aria-label="Choose a Homebase backup file">
+      </div>
+      <span class="zl-hint">Export saves your settings, links, city, to-dos and notes as a small JSON file.</span>
+      <span class="zl-error" id="import-err" hidden></span>
+    </div>
+  </div>
+  <div class="zl-dialog-foot"><button class="zl-btn zl-btn-primary" type="button" data-close>Done</button></div>
+</dialog>
+
+<script src="core.js"></script>
+<script src="weather.js"></script>
+<script src="widgets.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
